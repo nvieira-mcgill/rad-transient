@@ -11,7 +11,7 @@ For more details, see the accompanying report in the file `PHYS642_Project2.pdf`
 
 **main script**: `rad_transient.py`
 
-This script loads in a line list containing an assortment of <em>r</em>-process elements and runs a Monte Carlo to propagate packets of photons through an ejecta typical of a blue, lanthanide-poor kilonova. 
+This script loads in a line list containing an assortment of <em>r</em>-process elements and runs a Monte Carlo to propagate packets of photons through an ejecta typical of a blue, lanthanide-poor kilonova. This line list is already included in `NIST_and_Kurucz_rproc.csv`. Lines are acquired from a combination of the National Institute of Standards and Technology (NIST) [Atomic Spectra Database (ASD)](https://physics.nist.gov/PhysRefData/ASD/lines_form.html) and the [Kurucz & Bell](https://www.cfa.harvard.edu/amp/ampdata/kurucz23/sekur.html) line list.
 
 **Other important scripts:**
 
