@@ -19,6 +19,6 @@ This script loads in a line list containing an assortment of <em>r</em>-process 
 
 `>>> python3 collect_results.py ~/my_data_directory/` 
 
-If no argument is supplied, the script will look for files in a directory `./previous_runs`. This directory is included on this github, and includes previous runs which amount to around 30,000 photon packets. 
+If no argument is supplied, the script will look for files in a directory `./previous_runs`. This directory is included in a zip file on this github, and includes previous runs which amount to around 30,000 photon packets. 
 
 Running the first of these scripts (`collect_results.py`) will produce a light curve from the runs (Figure 5 of the accompanying report) and running the second (`collect_MC_info.py`) will plot a series of diagnostics on e.g. computation times for the Monte Carlo itself (Figures 6-8). 
