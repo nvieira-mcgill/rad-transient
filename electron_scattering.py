@@ -4,6 +4,9 @@
 Created on Sat Apr 11 22:01:37 2020
 @author: Nicholas Vieira
 @electron_scattering.py
+
+Compute outgoing angles and energies for a photon scattering a single time off 
+of an electron.
 """
 
 import numpy as np
@@ -45,11 +48,18 @@ def cosalpha_gen(n=10000):
     return cosalpha_dist
 
 
-def scatter(beta, mu_in, E_in, nu_in):
+def scatter(beta, mu_in, E_in):
     """
-    needs description
-    """
+    beta: ejecta velocity v/c
+    mu_in: ingoing photon propagation angle wrt to the velocity vector of the 
+           ejecta
+    E_in: rest-frame energy of the incident photon
     
+    For a photon packet with energy E_in travelling with initial propagation 
+    angle cosine mu_in which collides with an electron with some beta = v/c,
+    compute the outgoing propagation angle cosine mu_out and the outgoing 
+    energy E_out after the scattering.
+    """
     # sample cosalpha using rejection method
     cosalpha = np.random.choice(cosalpha_gen(1)) # just one
     alpha = np.arccos(cosalpha)        
@@ -70,10 +80,7 @@ def scatter(beta, mu_in, E_in, nu_in):
     # compute the outgoing packet energy
     E_out = E_in * (1 - mu_in*beta) / (1 - mu_out*beta)
     
-    # compute the outgoing packet frequency
-    #nu_out = nu_in * E_out / E_in
-    
-    return mu_out, E_out#, nu_out
+    return mu_out, E_out
     
     
             

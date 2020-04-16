@@ -8,8 +8,15 @@ Created on Mon Apr 13 18:52:31 2020
 Monte Carlo code to produce a light curve/spectra for a radioactivel-powered
 transient such as a supernova or kilonova. Based primarily on the work of:
 
-<ADD CITATIONS>
-    
+--> Bulla 2019, MNRAS 489, 5037-5045
+--> Bulla et al. 2015, MNRAS 450, 967–981
+--> Kasen et al. 2006, ApJ 651, 366-380
+--> Mazzali & Lucy 1993, A&A 279, 447-456
+--> Tanaka et al. 2019, arXiv:1906.08914
+
+See the accompanying report on the github 
+(https://github.com/nvieira-mcgill/rad-transient/) for details.
+
 """
 
 ## imports
@@ -217,7 +224,6 @@ for j in range(1, len(t_arr)-1): # at each time step
             # compute distance to current shell + nearest shell **ahead** 
             r_current = r_ejecta[r_ejecta <= r_n][-1] # current shell (i)
             r_ahead = r_ejecta[r_ejecta > r_n][0] # shell ahead (i+1)
-            #idx_ahead = idx_current + 1
             drad_to_sh_ahead = r_ahead - r_n
             print(f"t = {t_n:.2e} days\tr = {r_n:.2e} cm")
             print(f"r_i = {r_current:.2e} cm\t"+
@@ -246,8 +252,7 @@ for j in range(1, len(t_arr)-1): # at each time step
             if event == "electron scatter": 
                 print("electron scattering")
                 # update direction, energy
-                mu_n, e_n  = electron_scattering.scatter(v_shell/c, 
-                                                         mu_n, e_n, freq_n)
+                mu_n, e_n  = electron_scattering.scatter(v_shell/c, mu_n, e_n)
                 print(f"mu_new = {mu_n:.2f}")
                 
             ## if line scattering
@@ -258,9 +263,8 @@ for j in range(1, len(t_arr)-1): # at each time step
                                                         event/1e4, 
                                                         dtravel, YE)
                 # update direction, energy
-                mu_n, e_n = line_scattering.scatter(tau_line, 
-                                                    v_shell/c, 
-                                                    mu_n, e_n, freq_n)
+                mu_n, e_n = line_scattering.scatter(tau_line, v_shell/c, 
+                                                    mu_n, e_n)
                 if mu_n == mu_old: # if did not interact (low probability)
                     print("no scatter!")
                     print("exiting shell")
@@ -298,7 +302,7 @@ results = np.array([t_arrival,
                     final_e, 
                     final_freq, 
                     final_mu])
-# info on Monte Carlo 
+# Monte Carlo diagnostics
 end = timer()
 MC_info = np.array([end-start, # total MC time
                     NSHELL,

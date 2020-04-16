@@ -8,6 +8,7 @@ Created on Tue Apr 7 21:54:56 2020
 Compute density and temperature profiles applicable to a kilonova on a radial 
 grid. Profiles are taken from:
 --> Bulla 19, MNRAS 489, 5037-5045 (their equations 2, 3, 12)
+
 """
 
 import numpy as np
@@ -18,6 +19,9 @@ def rho_init(r, a=1, beta=-3):
     r: distance from center in cm
     a: scaling factor to get a desired ejecta mass (optional; default 1)
     beta: slope of density power-law (optional; default -3)
+    
+    Compute initial density profile assuming some scaling factor a and a power
+    law slope of -3.
     """
     return a * r**beta
 
@@ -29,7 +33,9 @@ def rho_init_Kasen13(t, beta_ej=0.2, Mej=0.04):
     Mej: ejecta mass in solar masses (optional; default 0.04)
     
     Estimate the density at ~1 day post-merger for a BNS KNe, as given in: 
-    Kasen+13, ApJ 774, 1 (their equation 3)
+    --> Kasen+13, ApJ 774, 1 (their equation 3)
+    
+    Note that this density is just the density at the photosphere at this time.
     """
     return (2.8e-13) * Mej/0.01 * (beta_ej/0.1)**-3 * t**-3
 
@@ -42,8 +48,10 @@ def rho(r, t, t0=1.5, beta=-3, rho_i=None, a=1):
     beta: slope of density power-law (optional; default -3)
     rho_i: initial density at <t0> days (optional; default None, which uses 
            function rho_init() above to estimate)
-    a: sacale factor for computing rho_init() (optional; default 1; only 
+    a: scale factor for computing rho_init() (optional; default 1; only 
        relevant if rho_i is not given)
+    
+    Compute time and space-dependent density profile.
     """
     # if no initial density assigned
     if type(rho_i) == type(None):
@@ -70,6 +78,8 @@ def T(t, t0=1.5, alpha=-0.4, T_init=5000, T_floor=0):
     alpha: slope of temperature power-law (optional; default -0.4)
     T_init: temperature at <t0> days (optional; default 5000K)
     T_floor: temperature minimum (optional; default 0) 
+    
+    Compute time-dependent temperature profile. No spatial dependence.
     """
     
     if type(t) in (list, np.ndarray): # if a list of times is given

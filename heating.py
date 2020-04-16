@@ -7,7 +7,7 @@ Created on Tue Apr 7 18:22:53 2020
 
 Compute radioactive heating rates, thermalization efficiencies, bolometric 
 luminosities, and photospheric radii for a kilonova over time for known 
-ejecta velocity and mass.
+characteristic ejecta velocity, mass, and grey opacity.
 """
 
 import numpy as np

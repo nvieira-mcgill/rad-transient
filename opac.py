@@ -14,6 +14,7 @@ Bound-bound opacities are taken from:
 
 which in turn used the following paper for their calculations:
 --> Tanaka+19, arXiv:1906.08914
+
 """
 
 TREF = 1.5 # reference time, in days
@@ -45,7 +46,7 @@ def prefac_bb_lanthpoor(wavelen):
 def kappa_bb_lanthpoor(t, prefac=5e-3):
     """
     t: time in days
-    prefac: opacity at t=1.5 days for some wavelength
+    prefac: opacity at t=1.5 days for some wavelength (optional; default 5e-3)
     """
     return prefac * (t/TREF)**GAMMA
 
@@ -68,6 +69,6 @@ def prefac_bb_lanthrich(wavelen):
 def kappa_bb_lanthrich(t, prefac=1.0):
     """
     t: time in days
-    prefac: opacity at t=1.5 days for some wavelength
+    prefac: opacity at t=1.5 days for some wavelength (optional; default 1)
     """
     return prefac * (t/TREF)**GAMMA

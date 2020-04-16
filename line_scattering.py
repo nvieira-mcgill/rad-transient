@@ -4,13 +4,26 @@
 Created on Sat Apr 11 23:13:04 2020
 @author: Nicholas Vieira
 @line_scattering.py
+
+Scatter a photon packet on a known atomic line. A crude model for an atomic 
+line which invokes the Sobolev approximation. Based on the work of:
+--> Kasen et al. 2006, ApJ 651, 366-380
+
 """
 
 import numpy as np
 
-def scatter(tau_l, beta_ej, mu_in, E_in, nu_in):
+def scatter(tau_l, beta_ej, mu_in, E_in):
     """
-    needs description
+    tau_l: optical depth of the line
+    beta_ej: velocity v/c of the ejecta in which the interaction occurs
+    mu_in: ingoing photon propagation angle wrt to the velocity vector of the 
+           ejecta
+    E_in: rest-frame energy of the incident photon
+    
+    Using the optical depth of the line, determine whether the photon packet is
+    trapped in the line. If trapped, scatter the photon in the line until it 
+    escapes.
     """
     
     # compute interaction probability, compare to random draw in [0, 1)

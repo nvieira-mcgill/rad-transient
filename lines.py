@@ -6,12 +6,12 @@ Created on Wed Apr 8 13:24:26 2020
 @lines.py
 
 Load in line lists from the National Institute of Standards and Technology 
-(NIST) Atomic Spectra Database (ASD), or, from the Kurucz line list. 
+(NIST) Atomic Spectra Database (ASD), or, from the Kurucz & Bell line list. 
 
-Currently, line lists from Kurucz need to be downloaded indpendently. An 
-example of the format that should be used is shown on the github. 
+Currently, line lists from Kurucz need to be downloaded indpendently from the 
+website https://www.cfa.harvard.edu/amp/ampdata/kurucz23/sekur.html 
 
-*** fns need descriptions
+An example of the format that should be used is shown on the github. 
 """
 
 import numpy as np
@@ -34,6 +34,11 @@ def query_lines_NIST(wavmin, wavmax, elements=None, fik_cut=0.05, write=None):
              0.05)
     write: filename to write the table to (optional; default None, which will
            write no file)
+    
+    Submits an online query to obtain a table of lines from the NIST ASD for 
+    the desired elements and wavelength ranges. Optionally, apply a minimum cut 
+    on the oscillator strength to obtain only sufficiently strong lines. 
+    Optionally writes the file after reading it in.
     """
     if type(elements) in [list, np.ndarray]:
         ecopy = elements.copy()
@@ -85,6 +90,11 @@ def load_lines_NIST(table, wavmin=None, wavmax=None, fik_cut=None):
     wavmax: upper wavelength bound in Angstroms (optional; default None) 
     fik_cut: minimum oscillator strength cut to keep a line (optional; default
              None)
+    
+    Load in a table of lines which was previously downloaded using the function
+    query_lines_NIST() above. (In reality, can load in any line list as long 
+    as the tables contain the columns 'wavelength [AA]' and 'fik', where the 
+    latter is the oscillator strength).
     """
     
     tab = Table.read(table)
@@ -109,6 +119,10 @@ def fix_file_Kurucz(textfile, output=None):
               separately by the user from 
               https://www.cfa.harvard.edu/amp/ampdata/kurucz23/sekur.html)\
     output: name for output fixed file (optional; default set below)
+    
+    Fixes some formatting inconsistencies which might be present in line lists
+    downloaded from the above website so that astropy is not confused by the 
+    formatting.
     """
         
     tf = open(textfile, "r")
@@ -148,6 +162,10 @@ def load_lines_Kurucz(textfile, wavmin=None, wavmax=None):
               https://www.cfa.harvard.edu/amp/ampdata/kurucz23/sekur.html)
     wavmin: lower wavelength bound in Angstroms (optional; default None)
     wavmax: upper wavelength bound in Angstroms (optional; default None) 
+    
+    Load in a Kurucz line list from a file which was downloaded from the above 
+    website. Automatically checks for formatting inconsistencies which can 
+    confuse astropy, and fixes them, writing the fixed list to a new file.
     """
     # read in file
     try:
@@ -180,7 +198,6 @@ def load_lines_Kurucz(textfile, wavmin=None, wavmax=None):
     return tab
 
 #### find line following a given line in some line list #######################
-    
 def next_line(wavelen, line_table, offset=0):
     """
     wavelen: wavelength of interacting photon in angstroms
@@ -188,6 +205,12 @@ def next_line(wavelen, line_table, offset=0):
     offset: how many lines to look ahead (optional; default 0)
             (e.g., if you want not the next line but the line after, set 
             offset=1)
+            
+    Given either a NIST ASD line list, a Kurucz line list, or **any** line list
+    which contains the column 'wavelength [AA]', and some wavelength for an 
+    interacting photon, find the closest line in the list with a *longer* 
+    wavelength than the photon. Optionally, provide the 2nd line, 3rd line, and
+    so forth using the offset argument.
     """
     mask = line_table["wavelength [AA]"]>wavelen
     lines = line_table["wavelength [AA]"][mask].tolist()
@@ -201,13 +224,25 @@ def next_line(wavelen, line_table, offset=0):
         return 0
 
 #### combine a line list from NIST ASD and Kurucz line list ###################
-
 def combine_NIST_Kurucz(NIST_table_file, Kurucz_textfile, 
                         wavmin_NIST=None, wavmax_NIST=None,
                         wavmin_Kurucz=None, wavmax_Kurucz=None,
                         write=None):
     """
-    needs description
+    NIST_table_file: filename for a NIST ASD line list
+    Kurucz_textfile: filename for a Kurucz line list
+    wavmin_NIST: minimum required wavelength for NIST ASD lines, in Angstroms
+                 (optional; default None)
+    wavmax_NIST: maximum allowed wavelength for NIST ASD lines, in Angstroms
+                 (optional; default None)
+    wavmin_Kurucz: minimum required wavelength for Kurucz lines, in Angstroms
+                   (optional; defualt None)
+    wavmax_Kurucz: maximum allowed wavelength for Kurucz lines, in Angstroms 
+                   (optional; default None)
+    write: whether to write the file or just load it in (optional; default 
+           False, which does not write the file)
+    
+    Combine a NIST and Kurucz line list into a single file, for convenience. 
     """
     
     NIST_lines = load_lines_NIST(NIST_table_file, wavmin_NIST, wavmax_NIST)
@@ -226,6 +261,9 @@ def combine_NIST_Kurucz(NIST_table_file, Kurucz_textfile,
 
 def load_lines_combined(line_file):
     """
+    line_file: filename for combined NIST ASD + Kurucz line list
+    
+    Load in the combined line list.
     """
     return Table.read(line_file, format="ascii")
     
