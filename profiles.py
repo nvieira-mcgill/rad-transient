@@ -34,19 +34,32 @@ def rho_init_Kasen13(t, beta_ej=0.2, Mej=0.04):
     return (2.8e-13) * Mej/0.01 * (beta_ej/0.1)**-3 * t**-3
 
 
-def rho(r, t, t0=1.5, beta=-3, rho_i=None):
+def rho(r, t, t0=1.5, beta=-3, rho_i=None, a=1):
     """
     r: distance from center in cm
     t: time post-merger in days
     t0: time at which rho_init was computed in days (optional; default 1.5)
     beta: slope of density power-law (optional; default -3)
     rho_i: initial density at <t0> days (optional; default None, which uses 
-    function rho_init() above to estimate)
+           function rho_init() above to estimate)
+    a: sacale factor for computing rho_init() (optional; default 1; only 
+       relevant if rho_i is not given)
     """
+    # if no initial density assigned
     if type(rho_i) == type(None):
-        return rho_init(r) * (t/t0)**beta
+        if type(t) in [list, np.ndarray]: # if a list of times is given
+            ret = [rho_init(r, a=a) * (tim/t0)**beta for tim in t]
+            return np.array(ret)
+        else: # if a single time is given
+            return rho_init(r, a=a) * (t/t0)**beta
+        
+    # if an initial density is assigned
     else:
-        return rho_i * (t/t0)**beta
+        if type(t) in [list, np.ndarray]: # if a list of times is given            
+            ret = [rho_i * (tim/t0)**beta for tim in t]
+            return np.array(ret)
+        else: # if a single time is given
+            return rho_i * (t/t0)**beta
 
 
 #### TEMPERATURE PROFILES #####################################################
@@ -59,8 +72,8 @@ def T(t, t0=1.5, alpha=-0.4, T_init=5000, T_floor=0):
     T_floor: temperature minimum (optional; default 0) 
     """
     
-    if type(t) in (list, np.ndarray):
+    if type(t) in (list, np.ndarray): # if a list of times is given
         T = [max(T_init * (tim/t0)**alpha, T_floor) for tim in t]
         return np.array(T)
-    else:
+    else: # if a single time is given
         return max([T_init * (t/t0)**alpha, T_floor])
